@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeA AI ChatBot</title>
+    <title>CodeA AI</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -39,22 +39,7 @@
         padding: 10px;
         margin-bottom: 10px;
       }
-      /* .questions-list {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        overflow-y: auto;
-        margin-left: 12px;
-      }
-      .questions-list-item {
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      .questions-list-item:hover {
-        background-color: #eee;
-      } */
+
       .loader {
         border: 5px solid #f3f3f3;
         border-top: 5px solid #3498db;
@@ -165,9 +150,6 @@
         <div class="chat-box" id="chatBox">
           <!-- Chat messages will be displayed here -->
         </div>
-        <!-- <div class="questions-list" id="questionsList">
-          List of questions asked will be displayed here
-        </div> -->
       </div>
 
       <!-- Input field for asking questions -->
@@ -182,6 +164,7 @@
 
       <div class="loader" id="loader"></div>
     </div>
+    <!-- Input field closes here -->
 
     <script>
       const ws = new WebSocket("ws://localhost:3500");

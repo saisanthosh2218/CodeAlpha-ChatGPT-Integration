@@ -142,24 +142,17 @@
         console.log("Message from server:", event.data);
         const message = JSON.parse(event.data);
         if (message.type === "response") {
-          // Display the response from the server in the chatbox
           displayChatMessage(message.response, "incoming");
-          // Remove the loading message
           removeLoadingMessage();
         } else if (message.type === "error") {
-          // Display error message in the chatbox
           displayChatMessage(message.message, "error");
-          // Remove the loading message
           removeLoadingMessage();
         }
       });
 
       function sendMessageToServer(message) {
-        // Display user's message first
         displayChatMessage(message, "outgoing");
-        // Then display loading message
         displayChatMessage("Loading...", "incoming");
-        // Send user's message to the server
         ws.send(JSON.stringify({ type: "question", question: message }));
       }
 
@@ -177,10 +170,8 @@
         const chatLi = document.createElement("li");
         chatLi.classList.add("chat", className);
         if (className === "incoming") {
-          // Add smart_toy icon only for incoming messages
           chatLi.innerHTML = `<span class="material-symbols-outlined">smart_toy</span><p>${message}</p>`;
         } else {
-          // For outgoing messages, do not add smart_toy icon
           chatLi.innerHTML = `<p style="margin-top:6px">${message}</p>`;
         }
         chatbox.appendChild(chatLi);
