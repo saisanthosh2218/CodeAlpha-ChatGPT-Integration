@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeA AI ChatBot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-y: hidden;
+      }
+      .container {
+        display: flex;
+        padding: 15px;
+        box-sizing: border-box;
+      }
+      .chat-box {
+        width: 100%;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        font-size: larger;
+        height: 276px;
+      }
+      .question {
+        background-color: #ffeb3b;
+        color: #333;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .answer {
+        background-color: #90caf9;
+        color: #333;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      /* .questions-list {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow-y: auto;
+        margin-left: 12px;
+      }
+      .questions-list-item {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .questions-list-item:hover {
+        background-color: #eee;
+      } */
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+        display: none;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .main-div {
+        background-color: lightcoral;
+        padding: 5px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      button {
+        border: none;
+        border-radius: 3px;
+        padding: 8px;
+        width: 80px;
+        background-color: lightblue;
+        height: 38px;
+        font-size: large;
+      }
+      button:hover {
+        cursor: pointer;
+      }
+      #questionInput {
+        width: 90%;
+        padding: 9px;
+        border: none;
+        border-radius: 4px;
+        font-size: larger;
+        outline: none;
+      }
+      #input-control {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      @media only screen and (min-width: 768px) {
+        .chat-box {
+          height: 300px;
+        }
+        #questionInput {
+          width: 85%;
+          margin-right: 10px;
+        }
+        button {
+          width: 70px;
+        }
+        #input-control {
+          margin-bottom: 8px;
+        }
+      }
+
+      @media only screen and (min-width: 992px) {
+        .chat-box {
+          height: 350px;
+          width: 95%;
+        }
+      }
+
+      @media only screen and (max-width: 767px) {
+        #input-control {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        /* Mobile devices */
+        .container {
+          width: 100%;
+        }
+        .chat-box {
+          height: 200px;
+          overflow-y: auto;
+        }
+        #questionInput {
+          width: 75%;
+          margin-right: 12px;
+          button {
+            width: 70px;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-div">
+      <div class="container">
+        <div class="chat-box" id="chatBox">
+          <!-- Chat messages will be displayed here -->
+        </div>
+        <!-- <div class="questions-list" id="questionsList">
+          List of questions asked will be displayed here
+        </div> -->
+      </div>
+
+      <!-- Input field for asking questions -->
+      <div id="input-control">
+        <input
+          type="text"
+          id="questionInput"
+          placeholder="Type your question here..."
+        />
+        <button onclick="askQuestion()">Ask</button>
+      </div>
+
+      <div class="loader" id="loader"></div>
+    </div>
+
+    <script>
+      const ws = new WebSocket("ws://localhost:3500");
+
+      ws.onopen = function () {
+        console.log("WebSocket connection established");
+      };
+
+      ws.onerror = function (error) {
+        console.error("WebSocket encountered an error:", error);
+      };
+
+      ws.onclose = function (event) {
+        console.log("WebSocket connection closed:", event);
+      };
+
+      ws.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        if (data.type === "response") {
+          displayAnswer(data.response);
+          hideLoader();
+        } else if (data.type === "question") {
+          displayQuestion(data.question);
+          addQuestionToList(data.question);
+        }
+      };
+
+      // Function to display a question in the chat box
+      function displayQuestion(question) {
+        const chatBox = document.getElementById("chatBox");
+        const questionElement = document.createElement("div");
+        questionElement.classList.add("question");
+        questionElement.textContent = question;
+        chatBox.appendChild(questionElement);
+      }
+
+      // Function to display an answer in the chat box
+      function displayAnswer(answer) {
+        const chatBox = document.getElementById("chatBox");
+        const answerElement = document.createElement("div");
+        answerElement.classList.add("answer");
+        answerElement.textContent = answer;
+        chatBox.appendChild(answerElement);
+      }
+
+      // Function to add a question to the questions list
+      function addQuestionToList(question) {
+        const questionsList = document.getElementById("questionsList");
+        const questionItem = document.createElement("div");
+        questionItem.classList.add("questions-list-item");
+        questionItem.textContent = question;
+        questionsList.appendChild(questionItem);
+      }
+
+      // Function to ask a question
+      function askQuestion() {
+        showLoader();
+        const questionInput = document.getElementById("questionInput");
+        const question = questionInput.value.trim();
+        if (question !== "" && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: "question", question }));
+          questionInput.value = ""; // Clear the input field
+        } else {
+          console.error("WebSocket is not open or question is empty");
+        }
+      }
+
+      // Function to show the loader
+      function showLoader() {
+        document.getElementById("loader").style.display = "block";
+      }
+
+      // Function to hide the loader
+      function hideLoader() {
+        document.getElementById("loader").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
