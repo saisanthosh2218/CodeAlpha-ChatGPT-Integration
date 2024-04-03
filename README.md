@@ -32,10 +32,9 @@
   <h2>Acknowledgements</h2>
   <ul>
     <li>OpenAI: For providing access to the GPT API and enabling us to integrate ChatGPT into our website.</li>
-    <li>[Your Name/Organization]: [Brief description of their contribution or support]</li>
   </ul>
 
   <h2>Contact</h2>
-  <p>For any inquiries or feedback regarding this project, please contact [Your Contact Information].</p>
+  <p>For any inquiries or feedback regarding this project, please contact saisanthosh22182gmail.com.</p>
 
   <p>Thank you for your interest in ChatGPT Integration for Website!</p>
